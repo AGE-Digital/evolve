@@ -50,12 +50,13 @@ if ( ! class_exists( 'evolve_woocommerce' ) ) {
 			add_filter( 'woocommerce_shop_loop_subcategory_title', array( $this,'template_loop_category_title'), 10 );
 		}
 
-		private static function get_wc_version() {
-			return defined( 'WC_VERSION' ) && WC_VERSION ? WC_VERSION : null;
-		}
-
+		/**
+		 * Always true: evolve needs a far newer WooCommerce. Kept in case a child theme calls it.
+		 *
+		 * @deprecated 4.3.8
+		 */
 		public static function is_wc_version_gte_2_3() {
-			return self::get_wc_version() && version_compare( self::get_wc_version(), '2.3', '>=' );
+			return true;
 		}
 
 		function shop_loop_item_title() {
@@ -669,6 +670,11 @@ function evolve_woocommerce_after_cart_table( $args ) {
 	echo $html;
 }
 
+/**
+ * Not used by evolve. Kept in case a child theme calls it; will be removed in a future major version.
+ *
+ * @deprecated 4.3.8 Use woocommerce_cross_sell_display().
+ */
 function evolve_woocommerce_cross_sell_display_2( $posts_per_page = 3, $columns = 3, $orderby = 'rand' ) {
 	// Get visible cross sells then sort them at random.
 	$cross_sells = array_filter( array_map( 'wc_get_product', WC()->cart->get_cross_sells() ), 'wc_products_array_filter_visible' );
@@ -1939,6 +1945,12 @@ if ( class_exists( 'Woocommerce' ) ) {
    Woo Products Shortcode Recode
    ======================================= */
 
+/**
+ * Not used by evolve (no shortcode is registered for it). Kept in case a child theme calls it; will be removed in a
+ * future major version.
+ *
+ * @deprecated 4.3.8
+ */
 function evolve_woo_product( $atts, $content = null ) {
 	global $woocommerce_loop;
 
