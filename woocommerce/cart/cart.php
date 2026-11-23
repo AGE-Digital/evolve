@@ -11,7 +11,8 @@
  * the readme will list any important changes.
  *
  * evolve: WooCommerce 11.3.0's template with a visible coupon label, the quantity shown as "1" for items sold
- * individually, and "Total" as the mobile label of the line total.
+ * individually, "Total" as the mobile label of the line total, and the cart totals with a checkout button
+ * as the second column next to evolve's shipping calculator and coupon box.
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
@@ -219,7 +220,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 <?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
 
-<div class="cart-collaterals">
+<div class="cart-collaterals row">
 	<?php
 		/**
 		 * Cart collaterals hook.
@@ -229,6 +230,13 @@ do_action( 'woocommerce_before_cart' ); ?>
 		 */
 		do_action( 'woocommerce_cart_collaterals' );
 	?>
+
+	<?php // evolve: the totals and the checkout button as the second column (WooCommerce's hooked totals are unhooked in inc/woocommerce-support.php). ?>
+	<div class="cart-totals-buttons col-md-6 mb-4">
+		<?php woocommerce_cart_totals(); ?>
+
+		<a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="checkout-button btn mt-4 float-lg-right wc-forward"><?php esc_html_e( 'Proceed to Checkout', 'evolve' ); ?> &rarr;</a>
+	</div>
 </div>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>
