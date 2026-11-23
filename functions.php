@@ -792,6 +792,7 @@ if ( class_exists( 'bbPress' ) ) {
 
 if ( class_exists( 'Woocommerce' ) ) {
 	require get_parent_theme_file_path( '/inc/woocommerce-support.php' );
+	require get_parent_theme_file_path( '/inc/woocommerce-templates.php' );
 }
 /*
     Support
