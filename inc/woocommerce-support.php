@@ -1407,7 +1407,7 @@ add_action( 'woocommerce_account_address', 'evolve_woocommerce_before_my_account
 
 function evolve_woocommerce_before_my_account( $args ) {
 	$address_session = '';
-	if ( isset( $_SESSION['formvalue'] ) ) {
+	if ( evolve_WC_Form_Handler::$form_type ) {
 		$address_session = 'style="display:block"';
 	}
 	?>
@@ -1507,10 +1507,8 @@ function evolve_woocommerce_before_my_account( $args ) {
 					$address[ $key ]['value'] = apply_filters( 'woocommerce_my_account_edit_address_field_value', $value, $key, $load_address );
 
 					$addressform_session = '';
-					if ( isset( $_SESSION['formvalue'] ) && ! empty( $field['required'] ) && isset( $_POST[ $key ] ) ) {
-						$addressform_session = 'style=display:block';
-					} elseif ( isset( $_SESSION['formvalue'] ) ) {
-						$addressform_session = 'style=display:none';
+					if ( evolve_WC_Form_Handler::$form_type ) {
+						$addressform_session = evolve_WC_Form_Handler::$form_type === $load_address ? 'style=display:block' : 'style=display:none';
 					}
 				}
 				?>
@@ -1530,7 +1528,7 @@ function evolve_woocommerce_before_my_account( $args ) {
 
                     <p class="mb-0">
                         <input type="submit" class="btn btn-sm" id="saveaddress" name="save_address"
-                               value="<?php esc_url( 'Save Address', 'evolve' ); ?>"/>
+                               value="<?php esc_attr_e( 'Save Address', 'evolve' ); ?>"/>
 						<?php wp_nonce_field( 'woocommerce-edit_address' ); ?>
                         <input type="hidden" name="action" value="edit_address"/>
                         <input type="hidden" name="formvalue" value="billing"/>
@@ -1568,10 +1566,8 @@ function evolve_woocommerce_before_my_account( $args ) {
 				$address[ $key ]['value'] = apply_filters( 'woocommerce_my_account_edit_address_field_value', $value, $key, $load_address );
 
 				$addressform_session = '';
-				if ( isset( $_SESSION['formvalue'] ) && ! empty( $field['required'] ) && isset( $_POST[ $key ] ) ) {
-					$addressform_session = 'style=display:block';
-				} elseif ( isset( $_SESSION['formvalue'] ) ) {
-					$addressform_session = 'style=display:none';
+				if ( evolve_WC_Form_Handler::$form_type ) {
+					$addressform_session = evolve_WC_Form_Handler::$form_type === $load_address ? 'style=display:block' : 'style=display:none';
 				}
 			}
 			?>
@@ -1600,124 +1596,51 @@ function evolve_woocommerce_before_my_account( $args ) {
         </div>
     </div>
 	<?php
-	if(isset($_SESSION['formvalue'])){
-	    unset( $_SESSION['formvalue'] );
-	}
 }
 
 class evolve_WC_Form_Handler extends WC_Form_Handler {
+
+	/**
+	 * Address form ('billing' or 'shipping') submitted from the account dashboard in this request,
+	 * so the dashboard shows that form again with its errors.
+	 *
+	 * @var string
+	 */
+	public static $form_type = '';
 
 	public static function init() {
 		remove_action( 'template_redirect', array( 'WC_Form_Handler', 'save_address' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'evolve_save_address' ) );
 	}
 
+	/**
+	 * The account dashboard has both address forms on one page, so tell WooCommerce which address
+	 * is being saved, then let WooCommerce validate and save it. The address pages
+	 * (my-account/edit-address/billing|shipping) go straight to WooCommerce.
+	 */
 	public static function evolve_save_address() {
 		global $wp;
 
-		$formvalue = '';
-		if ( isset( $_POST['formvalue'] ) ) {
-			$formvalue             = $_POST['formvalue'];
-			$_SESSION['formvalue'] = $_POST['formvalue'];
-		}
+		$form_type = isset( $_POST['formvalue'] ) ? sanitize_key( wp_unslash( $_POST['formvalue'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checks the nonce.
 
-		if ( isset( $_POST['_wp_http_referer'] ) && strpos( $_POST['_wp_http_referer'], '/shipping' ) !== false ) {
-			$formvalue             = 'shipping';
-			$_SESSION['formvalue'] = 'shipping';
-		} elseif ( isset( $_POST['_wp_http_referer'] ) && strpos( $_POST['_wp_http_referer'], '/billing' ) !== false ) {
-			$formvalue             = 'billing';
-			$_SESSION['formvalue'] = 'billing';
-		}
-
-		if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
+		if ( ! in_array( $form_type, array( 'billing', 'shipping' ), true ) || isset( $wp->query_vars['edit-address'] ) ) {
+			parent::save_address();
 			return;
 		}
 
-		if ( empty( $_POST['action'] ) || 'edit_address' !== $_POST['action'] || empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-edit_address' ) ) {
-			return;
-		}
+		self::$form_type                = $form_type;
+		$wp->query_vars['edit-address'] = wc_edit_address_i18n( $form_type );
 
-		$user_id = get_current_user_id();
+		// After saving, return to the dashboard the form was on (WooCommerce goes to the addresses page).
+		$back_to_dashboard = function ( $location ) {
+			return wc_get_endpoint_url( 'edit-address', '', wc_get_page_permalink( 'myaccount' ) ) === $location ? wc_get_page_permalink( 'myaccount' ) : $location;
+		};
+		add_filter( 'wp_redirect', $back_to_dashboard );
 
-		if ( $user_id <= 0 ) {
-			return;
-		}
+		parent::save_address();
 
-		$load_address = ( $formvalue == 'shipping' ) ? 'shipping' : 'billing';
-
-		$address = WC()->countries->get_address_fields( esc_attr( $_POST[ $load_address . '_country' ] ), $load_address . '_' );
-
-		foreach ( $address as $key => $field ) {
-			if ( ! isset( $field['type'] ) ) {
-				$field['type'] = 'text';
-			}
-
-			// Get Value.
-			switch ( $field['type'] ) {
-				case 'checkbox' :
-					$_POST[ $key ] = isset( $_POST[ $key ] ) ? 1 : 0;
-					break;
-				default :
-					$_POST[ $key ] = isset( $_POST[ $key ] ) ? wc_clean( $_POST[ $key ] ) : '';
-					break;
-			}
-
-			// Hook to allow modification of value.
-			$_POST[ $key ] = apply_filters( 'woocommerce_process_myaccount_field_' . $key, $_POST[ $key ] );
-
-			// Validation: Required fields.
-			if ( ! empty( $field['required'] ) && empty( $_POST[ $key ] ) ) {
-				wc_add_notice( $field['label'] . ' ' . __( 'is a required field.', 'evolve' ), 'error' );
-			}
-
-			if ( ! empty( $_POST[ $key ] ) ) {
-
-				// Validation rules
-				if ( ! empty( $field['validate'] ) && is_array( $field['validate'] ) ) {
-					foreach ( $field['validate'] as $rule ) {
-						switch ( $rule ) {
-							case 'postcode' :
-								$_POST[ $key ] = strtoupper( str_replace( ' ', '', $_POST[ $key ] ) );
-
-								if ( ! WC_Validation::is_postcode( $_POST[ $key ], $_POST[ $load_address . '_country' ] ) ) {
-									wc_add_notice( __( 'Please enter a valid postcode/ZIP.', 'evolve' ), 'error' );
-								} else {
-									$_POST[ $key ] = wc_format_postcode( $_POST[ $key ], $_POST[ $load_address . '_country' ] );
-								}
-								break;
-							case 'phone' :
-								$_POST[ $key ] = wc_format_phone_number( $_POST[ $key ] );
-
-								if ( ! WC_Validation::is_phone( $_POST[ $key ] ) ) {
-									wc_add_notice( '<strong>' . $field['label'] . '</strong> ' . __( 'is not a valid phone number.', 'evolve' ), 'error' );
-								}
-								break;
-							case 'email' :
-								$_POST[ $key ] = strtolower( $_POST[ $key ] );
-
-								if ( ! is_email( $_POST[ $key ] ) ) {
-									wc_add_notice( '<strong>' . $field['label'] . '</strong> ' . __( 'is not a valid email address.', 'evolve' ), 'error' );
-								}
-								break;
-						}
-					}
-				}
-			}
-		}
-
-		if ( wc_notice_count( 'error' ) == 0 ) {
-
-			foreach ( $address as $key => $field ) {
-				update_user_meta( $user_id, $key, $_POST[ $key ] );
-			}
-
-			wc_add_notice( __( 'Address changed successfully.', 'evolve' ) );
-
-			do_action( 'woocommerce_customer_save_address', $user_id, $load_address );
-
-			wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
-			exit;
-		}
+		remove_filter( 'wp_redirect', $back_to_dashboard );
+		unset( $wp->query_vars['edit-address'] );
 	}
 
 }
@@ -1741,17 +1664,24 @@ function evolve_woocommerce_after_my_account( $args ) {
                     <label for="account_first_name"><?php esc_html_e( 'First name', 'evolve' ); ?> <span
                                 class="required">*</span></label>
                     <input type="text" class="form-control" name="account_first_name" id="account_first_name"
-                           value="<?php esc_attr( $user->first_name ); ?>"/>
+                           value="<?php echo esc_attr( $user->first_name ); ?>"/>
                 </p>
                 <p>
                     <label for="account_last_name"><?php esc_html_e( 'Last name', 'evolve' ); ?> <span class="required">*</span></label>
                     <input type="text" class="form-control" name="account_last_name" id="account_last_name"
-                           value="<?php esc_attr( $user->last_name ); ?>"/>
+                           value="<?php echo esc_attr( $user->last_name ); ?>"/>
+                </p>
+                <p>
+                    <label for="account_display_name"><?php esc_html_e( 'Display name', 'evolve' ); ?> <span class="required">*</span></label>
+                    <input type="text" class="form-control" name="account_display_name" id="account_display_name"
+                           aria-describedby="account_display_name_description"
+                           value="<?php echo esc_attr( $user->display_name ); ?>"/>
+                    <small id="account_display_name_description" class="form-text text-muted"><?php echo wc_reviews_enabled() ? esc_html__( 'This will be how your name will be displayed in the account section and in reviews', 'evolve' ) : esc_html__( 'This will be how your name will be displayed in the account section', 'evolve' ); ?></small>
                 </p>
                 <p>
                     <label for="account_email"><?php esc_html_e( 'Email address', 'evolve' ); ?> <span class="required">*</span></label>
-                    <input type="email" class="form-control" name="account_email" id="account_email"
-                           value="<?php esc_attr( $user->user_email ); ?>"/>
+                    <input type="email" class="form-control" name="account_email" id="account_email" autocomplete="email"
+                           value="<?php echo esc_attr( $user->user_email ); ?>"/>
                 </p>
                 <fieldset>
                     <legend><?php esc_html_e( 'Password Change', 'evolve' ); ?></legend>
@@ -1774,7 +1704,7 @@ function evolve_woocommerce_after_my_account( $args ) {
                        name="save_account_details"
                        value="<?php esc_attr_e( 'Save changes', 'evolve' ); ?>"/>
 
-				<?php wp_nonce_field( 'save_account_details' ); ?>
+				<?php wp_nonce_field( 'save_account_details', 'save-account-details-nonce' ); ?>
                 <input type="hidden" name="action" value="save_account_details"/>
             </form>
 
@@ -1834,12 +1764,15 @@ function evolve_woocommerce_view_order( $order_id ) {
 							<?php
 							$cart_item     = '';
 							$cart_item_key = '';
-							$thumbnail     = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
+							// The product may have been deleted since the order was placed: show the row without a thumbnail.
+							if ( $_product ) {
+								$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
 
-							if ( ! $_product->is_visible() ) {
-								echo $thumbnail;
-							} else {
-								printf( '<a class="product-thumbnail" href="%s">%s</a>', $_product->get_permalink(), $thumbnail );
+								if ( ! $_product->is_visible() ) {
+									echo $thumbnail;
+								} else {
+									printf( '<a class="product-thumbnail" href="%s">%s</a>', esc_url( $_product->get_permalink() ), $thumbnail );
+								}
 							}
 							?>
 
