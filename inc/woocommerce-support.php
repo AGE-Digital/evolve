@@ -1228,7 +1228,7 @@ function evolve_woocommerce_view_dashboard( $args ) {
 add_action( 'woocommerce_account_orders', 'evolve_woocommerce_before_account_orders' );
 
 function evolve_woocommerce_before_account_orders( $args ) {
-	$my_orders_columns = apply_filters( 'woocommerce_my_account_my_orders_columns', array(
+	$my_orders_columns = apply_filters( 'woocommerce_account_orders_columns', array( // WooCommerce also runs callbacks on the old name, woocommerce_my_account_my_orders_columns.
 		'order-number'  => __( 'Order', 'evolve' ),
 		'order-date'    => __( 'Date ', 'evolve' ),
 		'order-status'  => __( 'Status', 'evolve' ),
@@ -1755,7 +1755,7 @@ function evolve_woocommerce_view_order( $order_id ) {
 			if ( sizeof( $order->get_items() ) > 0 ) {
 
 				foreach ( $order->get_items() as $item ) {
-					$_product = apply_filters( 'woocommerce_order_item_product', $order->get_product_from_item( $item ), $item );
+					$_product = apply_filters( 'woocommerce_order_item_product', $item->get_product(), $item );
 					$product  = apply_filters( 'woocommerce_order_item_product', $item->get_product(), $item );
 					?>
                     <tr class="<?php echo esc_attr( apply_filters( 'woocommerce_order_item_class', 'order_item', $item, $order ) ); ?>">
@@ -1835,7 +1835,7 @@ function evolve_woocommerce_view_order( $order_id ) {
 				}
 			}
 
-			do_action( 'woocommerce_order_items_table', $order );
+			do_action( 'woocommerce_order_details_after_order_table_items', $order ); // WooCommerce also runs callbacks on the old name, woocommerce_order_items_table.
 			?>
 
             </tbody>
@@ -1987,7 +1987,7 @@ function evolve_woo_product( $atts, $content = null ) {
 
 		while ( $products->have_posts() ) : $products->the_post();
 
-			woocommerce_get_template_part( 'content', 'product' );
+			wc_get_template_part( 'content', 'product' );
 
 		endwhile; // end of the loop.
 
