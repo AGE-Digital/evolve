@@ -1228,7 +1228,6 @@ function evolve_woocommerce_view_dashboard( $args ) {
 add_action( 'woocommerce_account_orders', 'evolve_woocommerce_before_account_orders' );
 
 function evolve_woocommerce_before_account_orders( $args ) {
-	$order_count       = "";
 	$my_orders_columns = apply_filters( 'woocommerce_my_account_my_orders_columns', array(
 		'order-number'  => __( 'Order', 'evolve' ),
 		'order-date'    => __( 'Date ', 'evolve' ),
@@ -1237,12 +1236,13 @@ function evolve_woocommerce_before_account_orders( $args ) {
 		'order-actions' => '&nbsp;',
 	) );
 
-	$customer_orders = get_posts( apply_filters( 'woocommerce_my_account_my_orders_query', array(
-		'numberposts' => $order_count,
-		'meta_key'    => '_customer_user',
-		'meta_value'  => get_current_user_id(),
-		'post_type'   => wc_get_order_types( 'view-orders' ),
-		'post_status' => array_keys( wc_get_order_statuses() )
+	// WooCommerce's order query (as in its own my-orders template), so orders show with WooCommerce's order tables
+	// (HPOS, the default since WooCommerce 8.2) too; a post query found none there. Same number as before: one blog page.
+	$customer_orders = wc_get_orders( apply_filters( 'woocommerce_my_account_my_orders_query', array(
+		'customer' => get_current_user_id(),
+		'type'     => wc_get_order_types( 'view-orders' ),
+		'status'   => array_keys( wc_get_order_statuses() ),
+		'limit'    => (int) get_option( 'posts_per_page', 10 ),
 	) ) );
 
 	echo '<div class="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
