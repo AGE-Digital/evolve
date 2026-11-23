@@ -628,7 +628,11 @@ add_action( 'evolve_after_post_content', 'evolve_similar_posts', 10 );
    --------------------------------------- */
 
 if ( ! function_exists( 'evolve_number_pagination' ) ) {
-	function evolve_number_pagination( WP_Query $wp_query = null, $echo = true ) {
+	/**
+	 * @param WP_Query|null $wp_query Query to paginate; the main query when null.
+	 * @param bool          $echo     Print the links.
+	 */
+	function evolve_number_pagination( $wp_query = null, $echo = true ) { // No type: "WP_Query $x = null" is deprecated in PHP 8.4 and "?WP_Query" needs PHP 7.1.
 
 		if ( ( evolve_theme_mod( 'evl_pagination_type', 'infinite' ) != "number_pagination" && ! class_exists( 'Woocommerce' ) ) || ( evolve_theme_mod( 'evl_pagination_type', 'infinite' ) != "number_pagination" && class_exists( 'Woocommerce' ) && ! is_shop() ) ) {
 			return;
@@ -1131,7 +1135,7 @@ if ( ! function_exists( 'evolve_social_media_links' ) ) {
 				$social_float = 'left';
 				$social_m     = 'mr';
 				break;
-			default;
+			default:
 				$social_float = '';
 				$social_m     = '';
 				break;

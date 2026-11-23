@@ -13,6 +13,13 @@ if ( !class_exists( 'Evolve_Theme_Support' ) ) {
 	class Evolve_Theme_Support {
 
 		/**
+		 * Support, review and slug settings passed to the constructor.
+		 *
+		 * @var array
+		 */
+		public $data = array();
+
+		/**
 		 * Evolve_Theme_Support constructor.
 		 * @param $data
 		 */
