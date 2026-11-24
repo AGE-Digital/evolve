@@ -594,7 +594,7 @@ function evolve_woocommerce_header_add_to_cart_fragment( $fragments ) {
 
                     <div class="media">
 
-                        <a href="<?php echo get_permalink( $cart_item['product_id'] ); ?>"><?php $evolve_thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array(
+                        <a href="<?php echo esc_url( get_permalink( $cart_item['product_id'] ) ); ?>"><?php $evolve_thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array(
 								80,
 								80
 							) ), $cart_item, $cart_item_key );
@@ -604,7 +604,7 @@ function evolve_woocommerce_header_add_to_cart_fragment( $fragments ) {
                             <h6><?php echo get_the_title($cart_item['product_id']); ?></h6>
                             <p>
                                 <a class="dropdown-item"
-                                   href="<?php echo get_permalink( $cart_item['product_id'] ); ?>"><?php echo $cart_item['quantity']; ?>
+                                   href="<?php echo esc_url( get_permalink( $cart_item['product_id'] ) ); ?>"><?php echo esc_html( $cart_item['quantity'] ); ?>
                                     x <?php echo $woocommerce->cart->get_product_subtotal( $cart_item['data'], $cart_item['quantity'] ); ?></a>
 
                             </p>
@@ -1453,8 +1453,8 @@ function evolve_woocommerce_before_my_account( $args ) {
                     <div class="col<?php echo ( $col == '1' ) ? '' : '-lg-6'; ?>">
                         <div class="bg-white p-4 mt-4">
                             <div class="mb-3">
-                                <h5 class="d-inline"><?php echo $title; ?></h5>
-                                <a href="#" data-name="<?php echo $name; ?>" id="editaddress_<?php echo $name; ?>"
+                                <h5 class="d-inline"><?php echo esc_html( $title ); ?></h5>
+                                <a href="#" data-name="<?php echo esc_attr( $name ); ?>" id="editaddress_<?php echo esc_attr( $name ); ?>"
                                    class="edit woo_editaddress btn btn-sm ml-4 d-inline"><?php esc_html_e( 'Edit', 'evolve' ); ?></a>
                             </div>
                             <address>
@@ -1476,7 +1476,7 @@ function evolve_woocommerce_before_my_account( $args ) {
 								if ( ! $formatted_address ) {
 									_e( 'You have not set up this type of address yet', 'evolve' );
 								} else {
-									echo $formatted_address;
+									echo wp_kses_post( $formatted_address );
 								}
 								?>
                             </address>
@@ -1748,8 +1748,8 @@ function evolve_woocommerce_view_order( $order_id ) {
 					?>
                     <tr>
                         <td colspan="2" class="filler-td">&nbsp;</td>
-                        <th scope="row"><?php echo $total['label']; ?></th>
-                        <td class="product-total"><?php echo $total['value']; ?></td>
+                        <th scope="row"><?php echo esc_html( $total['label'] ); ?></th>
+                        <td class="product-total"><?php echo $total['value']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce's price markup; wp_kses_post would strip its <bdi>. ?></td>
                     </tr>
 				<?php
 				endforeach;
@@ -2155,7 +2155,7 @@ if ( evolve_theme_mod( 'evl_woocommerce_acc_link_main_nav', 0 ) == "0" && evolve
                                                        value="<?php esc_attr_e( 'Log In', 'evolve' ); ?>">
                                                 <input type="hidden" name="redirect_to"
                                                        value="<?php if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-													       echo $_SERVER['HTTP_REFERER'];
+													       echo esc_url( wp_unslash( $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 												       } ?>">
                                                 <input type="hidden" name="testcookie" value="1">
 
@@ -2218,7 +2218,7 @@ if ( evolve_theme_mod( 'evl_woocommerce_acc_link_main_nav', 0 ) == "0" && evolve
 
                                                 <div class="media">
 
-                                                    <a href="<?php echo get_permalink( $cart_item['product_id'] ); ?>"><?php $evolve_thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array(
+                                                    <a href="<?php echo esc_url( get_permalink( $cart_item['product_id'] ) ); ?>"><?php $evolve_thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( array(
 															80,
 															80
 														) ), $cart_item, $cart_item_key );
@@ -2228,7 +2228,7 @@ if ( evolve_theme_mod( 'evl_woocommerce_acc_link_main_nav', 0 ) == "0" && evolve
                                                         <h6><?php echo $cart_item['data']->get_name(); ?></h6>
                                                         <p>
                                                             <a class="dropdown-item"
-                                                               href="<?php echo get_permalink( $cart_item['product_id'] ); ?>"><?php echo $cart_item['quantity']; ?>
+                                                               href="<?php echo esc_url( get_permalink( $cart_item['product_id'] ) ); ?>"><?php echo esc_html( $cart_item['quantity'] ); ?>
                                                                 x <?php echo $woocommerce->cart->get_product_subtotal( $cart_item['data'], $cart_item['quantity'] ); ?></a>
                                                         </p>
                                                     </div>
