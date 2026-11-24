@@ -230,3 +230,10 @@ li.invisible.kirki-sortable-item[data-value="blog_post"] i.dashicons.dashicons-v
     box-shadow: 0 0 0 0.2rem rgba(50, 162, 168, 0.25);
     -webkit-box-shadow: 0 0 0 0.2rem rgba(50, 162, 168, 0.25);
 }
+
+/* Four-in-a-row size fields (padding, margin): WordPress 7 widened the input padding, which cut off values like "1.25rem". */
+#customize-theme-controls .customize-control-kirki-dimension.kirki-group-item .kirki-control-input {
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: center;
+}
