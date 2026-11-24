@@ -83,7 +83,7 @@ Date:       12/08/20
 
 - Ability to add a Youtube video to Custom Content on the home page added.
 - Some minor bug fixes.
-- Updated Kirki for compatibility with Wordpress 5.5
+- Updated Kirki for compatibility with WordPress 5.5
 
 Version  4.2.7
 Date:       04/06/20
@@ -133,7 +133,7 @@ Date:        29/11/19
 
 - Added another image size for post sliders, to improve image quality
 - Fixed header settings being ignored
-- Improved compatibility with Wordpress 5.3
+- Improved compatibility with WordPress 5.3
 - Updated Kirki framework
 
 Version  4.1.9
@@ -560,7 +560,7 @@ Date:         30/8/15
 
 -  Fixed Sticky Header issue
 -  Fixed Header and Footer Patern Issue 
--  Added standard WordPres templates - single.php, 404.php, search.php, author.php, attachment.php, page.php
+-  Added standard WordPress templates - single.php, 404.php, search.php, author.php, attachment.php, page.php
 -  Updated translation files 
 -  Minor fixes 
 

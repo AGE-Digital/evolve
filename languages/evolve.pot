@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-24T07:55:05+00:00\n"
+"POT-Creation-Date: 2026-11-24T13:15:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: evolve\n"
@@ -4688,7 +4688,7 @@ msgstr ""
 
 #: inc/support.php:116
 msgid ""
-"You are using our Evolve theme for a while now and we hope you love it! It you do, we would really appreciate a 5-star rating on Wordpress.org. \n"
+"You are using our Evolve theme for a while now and we hope you love it! If you do, we would really appreciate a 5-star rating on WordPress.org. \n"
 "\t\t\t\t\t\t\t\tIf you don't think our theme deserves 5 stars, please tell us why. "
 msgstr ""
 

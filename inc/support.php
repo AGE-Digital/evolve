@@ -113,7 +113,7 @@ if ( !class_exists( 'Evolve_Theme_Support' ) ) {
                     <form action="" method="get">
 
                         <p>
-							<?php esc_html_e( 'You are using our Evolve theme for a while now and we hope you love it! It you do, we would really appreciate a 5-star rating on Wordpress.org. 
+							<?php esc_html_e( 'You are using our Evolve theme for a while now and we hope you love it! If you do, we would really appreciate a 5-star rating on WordPress.org. 
 								If you don\'t think our theme deserves 5 stars, please tell us why. ', 'evolve' ) ?>
                         </p>
 
