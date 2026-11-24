@@ -1727,8 +1727,7 @@ add_action( 'woocommerce_view_order', 'evolve_woocommerce_view_order', 10 );
 function evolve_woocommerce_view_order( $order_id ) {
 	global $woocommerce;
 
-	$order              = wc_get_order( $order_id );
-	$order_item_product = new WC_Order_Item_Product();
+	$order = wc_get_order( $order_id );
 	?>
 
     <h4 class="mb-4"><?php esc_html_e( 'Order details', 'evolve' ); ?></h4>
@@ -1796,7 +1795,7 @@ function evolve_woocommerce_view_order( $order_id ) {
 
 							if ( $_product && $_product->exists() && $_product->is_downloadable() && $order->is_download_permitted() ) {
 
-								$download_files = $order_item_product->get_item_downloads();
+								$download_files = $item->get_item_downloads();
 								$i              = 0;
 								$links          = array();
 
