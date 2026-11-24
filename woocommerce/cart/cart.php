@@ -56,7 +56,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 				$visible = apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key );
 
 				if ( $_product instanceof WC_Product && $_product->exists() && $cart_item['quantity'] > 0 && $visible ) {
-					$cart_item_name = WC()->cart->get_item_product_name( $cart_item, $_product );
+					$cart_item_name = evolve_wc_cart_item_name( $cart_item, $_product );
 
 					/**
 					 * Filter the product name.
@@ -199,12 +199,12 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 					<?php if ( wc_coupons_enabled() ) { ?>
 						<div class="coupon">
-							<label for="coupon_code"><?php esc_html_e( 'Coupon:', 'evolve' ); ?></label> <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="<?php esc_attr_e( 'Coupon code', 'evolve' ); ?>" /> <button type="submit" class="button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'evolve' ); ?>"><?php esc_html_e( 'Apply coupon', 'evolve' ); ?></button>
+							<label for="coupon_code"><?php esc_html_e( 'Coupon:', 'evolve' ); ?></label> <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="<?php esc_attr_e( 'Coupon code', 'evolve' ); ?>" /> <button type="submit" class="button<?php echo esc_attr( evolve_wc_button_class() ); ?>" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'evolve' ); ?>"><?php esc_html_e( 'Apply coupon', 'evolve' ); ?></button>
 							<?php do_action( 'woocommerce_cart_coupon' ); ?>
 						</div>
 					<?php } ?>
 
-					<button type="submit" class="button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'evolve' ); ?>"><?php esc_html_e( 'Update cart', 'evolve' ); ?></button>
+					<button type="submit" class="button<?php echo esc_attr( evolve_wc_button_class() ); ?>" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'evolve' ); ?>"><?php esc_html_e( 'Update cart', 'evolve' ); ?></button>
 
 					<?php do_action( 'woocommerce_cart_actions' ); ?>
 

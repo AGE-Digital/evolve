@@ -45,7 +45,7 @@ defined( 'ABSPATH' ) || exit;
 			$visible = apply_filters( 'woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key );
 
 			if ( $_product instanceof WC_Product && $_product->exists() && $cart_item['quantity'] > 0 && $visible ) {
-				$cart_item_name = WC()->cart->get_item_product_name( $cart_item, $_product );
+				$cart_item_name = evolve_wc_cart_item_name( $cart_item, $_product );
 				/** This filter is documented in woocommerce/templates/cart/cart.php. */
 				$product_name = apply_filters( 'woocommerce_cart_item_name', $cart_item_name, $cart_item, $cart_item_key );
 				/** This filter is documented in woocommerce/templates/cart/cart.php. */

@@ -38,7 +38,7 @@ do_action( 'woocommerce_before_lost_password_form' );
 
 	<p class="woocommerce-form-row">
 		<input type="hidden" name="wc_reset_password" value="true" />
-		<button type="submit" class="woocommerce-Button button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" value="<?php esc_attr_e( 'Reset password', 'evolve' ); ?>"><?php esc_html_e( 'Reset password', 'evolve' ); ?></button>
+		<button type="submit" class="woocommerce-Button button<?php echo esc_attr( evolve_wc_button_class() ); ?>" value="<?php esc_attr_e( 'Reset password', 'evolve' ); ?>"><?php esc_html_e( 'Reset password', 'evolve' ); ?></button>
 	</p>
 
 	<?php wp_nonce_field( 'lost_password', 'woocommerce-lost-password-nonce' ); ?>

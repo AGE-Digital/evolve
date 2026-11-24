@@ -46,7 +46,7 @@ if ( $product->is_in_stock() ) : ?>
 		do_action( 'woocommerce_after_add_to_cart_quantity' );
 		?>
 
-		<button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="btn single_add_to_cart_button button alt<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>"><?php echo evolve_get_svg( 'shop' ) . esc_html( $product->single_add_to_cart_text() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- evolve icon. ?></button>
+		<button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="btn single_add_to_cart_button button alt<?php echo esc_attr( evolve_wc_button_class() ); ?>"><?php echo evolve_get_svg( 'shop' ) . esc_html( $product->single_add_to_cart_text() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- evolve icon. ?></button>
 
 		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 	</form>

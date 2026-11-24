@@ -164,3 +164,33 @@ function evolve_wc_no_products_found() {
 	get_product_search_form();
 	echo '</div>';
 }
+
+/**
+ * Extra class for WooCommerce buttons in evolve's template copies: WooCommerce's
+ * wc_wp_theme_get_element_class_name( 'button' ) where it exists (WooCommerce 7.0.1+), nothing on older stores.
+ * It only returns a class for block themes, so for evolve the result is always empty.
+ *
+ * @return string Class name with a leading space, or an empty string.
+ */
+function evolve_wc_button_class() {
+	$class = function_exists( 'wc_wp_theme_get_element_class_name' ) ? wc_wp_theme_get_element_class_name( 'button' ) : '';
+
+	return $class ? ' ' . $class : '';
+}
+
+/**
+ * Product name for a cart row in evolve's cart and checkout templates. WooCommerce 11.2+ appends the chosen
+ * "Any" variation attributes (WC_Cart::get_item_product_name); older stores get the product name, as their own
+ * templates did. Keeps the cart and checkout working on WooCommerce versions before 11.2.
+ *
+ * @param array      $cart_item Cart item.
+ * @param WC_Product $product   Product from the woocommerce_cart_item_product filter.
+ * @return string
+ */
+function evolve_wc_cart_item_name( $cart_item, $product ) {
+	if ( is_callable( array( WC()->cart, 'get_item_product_name' ) ) ) {
+		return WC()->cart->get_item_product_name( $cart_item, $product );
+	}
+
+	return $product->get_name();
+}

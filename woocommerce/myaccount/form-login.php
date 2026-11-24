@@ -52,7 +52,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 			<div class="align-items-center mt-4 mb-4 input-group">
 				<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
-				<button type="submit" class="woocommerce-button button woocommerce-form-login__submit<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'evolve' ); ?>"><?php esc_html_e( 'Log in', 'evolve' ); ?></button>
+				<button type="submit" class="woocommerce-button button woocommerce-form-login__submit<?php echo esc_attr( evolve_wc_button_class() ); ?>" name="login" value="<?php esc_attr_e( 'Log in', 'evolve' ); ?>"><?php esc_html_e( 'Log in', 'evolve' ); ?></button>
 				<div class="custom-control custom-checkbox ml-4">
 					<input class="woocommerce-form__input woocommerce-form__input-checkbox custom-control-input" name="rememberme" type="checkbox" id="rememberme" value="forever" />
 					<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme inline custom-control-label" for="rememberme"><?php esc_html_e( 'Remember me', 'evolve' ); ?></label>
@@ -109,7 +109,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 			<p class="woocommerce-form-row form-row">
 				<?php wp_nonce_field( 'woocommerce-register', 'woocommerce-register-nonce' ); ?>
-				<button type="submit" class="woocommerce-Button woocommerce-button button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?> woocommerce-form-register__submit" name="register" value="<?php esc_attr_e( 'Register', 'evolve' ); ?>"><?php esc_html_e( 'Register', 'evolve' ); ?></button>
+				<button type="submit" class="woocommerce-Button woocommerce-button button<?php echo esc_attr( evolve_wc_button_class() ); ?> woocommerce-form-register__submit" name="register" value="<?php esc_attr_e( 'Register', 'evolve' ); ?>"><?php esc_html_e( 'Register', 'evolve' ); ?></button>
 			</p>
 
 			<?php do_action( 'woocommerce_register_form_end' ); ?>
