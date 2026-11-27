@@ -1172,7 +1172,7 @@ if ( ! function_exists( 'evolve_social_media_links' ) ) {
 
                 <li><a target="_blank" href="<?php echo esc_attr( $twitter_id ); ?>" data-toggle="tooltip"
                        data-placement="bottom"
-                       title="<?php esc_attr_e( 'Twitter', 'evolve' ); ?>"><?php echo evolve_get_svg( 'twitter' ); ?></a>
+                       title="<?php esc_attr_e( 'X', 'evolve' ); ?>"><?php echo evolve_get_svg( 'twitter' ); ?></a>
                 </li>
 
 			<?php }
@@ -1259,8 +1259,8 @@ if ( ! function_exists( 'evolve_sharethis' ) ) {
                 <div class="share-this">
 
                     <a rel="nofollow" data-toggle="tooltip" data-placement="bottom"
-                       title="<?php esc_attr_e('Share on Twitter', 'evolve'); ?>" target="_blank"
-                       href="https://twitter.com/intent/tweet?text=<?php echo urlencode($post->post_title); ?>&amp;url=<?php echo urlencode(get_the_permalink()); ?>"
+                       title="<?php esc_attr_e('Share on X', 'evolve'); ?>" target="_blank"
+                       href="https://x.com/intent/tweet?text=<?php echo urlencode($post->post_title); ?>&amp;url=<?php echo urlencode(get_the_permalink()); ?>"
                        ); ?>
 
                         <?php echo evolve_get_svg('twitter'); ?>
